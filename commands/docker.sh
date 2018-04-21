@@ -90,13 +90,14 @@ case $ARG_COMMAND in
         docker-machine ssh "$ARG_MACHINE" "true \
           && rm -rf $ARG_NAME_TAR";
       ;;
+      'exec')
+        docker-machine ssh "$ARG_MACHINE" "$@";
+      ;;
       'mkdir')
-        ARG_TARGET="$@"; shift;
-        docker-machine ssh "$ARG_MACHINE" "mkdir -p $ARG_TARGET";
+        docker-machine ssh "$ARG_MACHINE" "mkdir -p $@";
       ;;
       'touch')
-        ARG_TARGET="$@"; shift;
-        docker-machine ssh "$ARG_MACHINE" "touch $ARG_TARGET";
+        docker-machine ssh "$ARG_MACHINE" "touch $@";
       ;;
       'create')
         ARG_DRIVER=$1; shift;
