@@ -10,30 +10,6 @@ if [ -z "$npm_package_organization" ]; then
   exit 1;
 fi;
 
-if [ "$NODE_ENV" != 'production' ]; then
-  vars=$(cat \
-    .env.default \
-    .env.development \
-    .env.development.local \
-    .env \
-    2>/dev/null | xargs \
-  );
-  if ! [ -z "$vars" ]; then
-    export $vars;
-  fi;
-else
-  vars=$(cat \
-    .env.default \
-    .env.production \
-    .env.production.local \
-    .env \
-    2>/dev/null | xargs \
-  );
-  if ! [ -z "$vars" ]; then
-    export $vars;
-  fi;
-fi;
-
 function normalizePath {
   local path=${1//\/.\//\/};
   while [[ $path =~ ([^/][^/]*/\.\./) ]]; do
@@ -52,23 +28,51 @@ function localizePath {
   echo $(normalizePath "$(cd -P "$(dirname "$SOURCE")" && pwd)/$1");
 }
 
-ARG_COMMAND="$1"; shift;
+function setupEnvironment {
+  if [ "$NODE_ENV" != 'production' ]; then
+    vars=$(cat \
+      .env.default \
+      .env.development \
+      .env.development.local \
+      .env \
+      2>/dev/null | xargs \
+    );
+    if ! [ -z "$vars" ]; then
+      export $vars;
+    fi;
+  else
+    vars=$(cat \
+      .env.default \
+      .env.production \
+      .env.production.local \
+      .env \
+      2>/dev/null | xargs \
+    );
+    if ! [ -z "$vars" ]; then
+      export $vars;
+    fi;
+  fi;
+}
 
-case $ARG_COMMAND in
-  'eval')
-    eval "$@";
-  ;;
-  'generate')
-    eval "$(localizePath ./commands/generate.sh) $@";
-  ;;
-  'docker')
-    eval "$(localizePath ./commands/docker.sh) $@";
-  ;;
-  'version')
-    eval "$(localizePath ./commands/version.sh) $@";
-  ;;
-  *)
-    echo "Error: Command does not exist: $ARG_COMMAND";
-    exit 1;
-  ;;
-esac;
+while test $# -gt 0; do
+  ARG_COMMAND="$1"; shift;
+  case $ARG_COMMAND in
+    'eval')
+      setupEnvironment;
+      eval "$@";
+      exit 0;
+    ;;
+    'generate'|'docker'|'version')
+      setupEnvironment;
+      eval "$(localizePath ./commands/${ARG_COMMAND}.sh) $@";
+      exit 0;
+    ;;
+    '-c'|'--cd')
+      cd $1; shift;
+    ;;
+    *)
+      echo "Error: Command does not exist: $ARG_COMMAND";
+      exit 1;
+    ;;
+  esac;
+done;
