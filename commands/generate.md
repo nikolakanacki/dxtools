@@ -10,5 +10,5 @@ yarn tools generate <target>
 
 - `<target>`:
   - `env`: Touches all the env files (see [here](../)).
-  - `gitignore-node`: Generates node `.gitignore` for node projects by prepending `dxtools` defaults to the official [Node.gitignore](https://raw.githubusercontent.com/github/gitignore/master/Node.gitignore) file.
+  - `gitignore <target>`: Generate `.gitignore` files based on the official [`gitignore`](https://github.com/github/gitignore) repository files. Argument `<target>` should be the name of the file (without `.gitignore` suffix), eg: `dxtools generate gitignore Node`.
   - `dockerignore`: Generates default `.dockerignore` file.
