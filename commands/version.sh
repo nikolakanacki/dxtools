@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if ! [ -z "$(git status --porcelain)" ]; then
   echo 'Clean up your working directory before making a version bump';
   exit 1;
