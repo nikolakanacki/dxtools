@@ -38,23 +38,27 @@ If the installation went well the tool should be available under `yarn docker`. 
 
 ## Commands
 
-- `yarn docker clean`
+- `clean`
   Removes all containers which name contains the target repository package name.
-- `yarn docker enter <service>`
+- `enter <service>`
   Enters an interactive shell connected to the provided service.
-- `yarn docker restart [...service]`
+- `restart [...service]`
   Restarts the service (or services) if ones are provided, otherwise restarts all containers.
-- `yarn docker machine <machine> push <path>`
+- `generate `
+- `machine <machine> push <path>`
   Takes the given path in the local project and "pushes" (uploads) it up to the machine replacing the directory found by resolving the `<path>` from the app root (ssh root).
-- `yarn docker machine <machine> pull <path>`
+- `machine <machine> pull <path>`
   Does exactly the opposite of the equivalent `pull` command: pulls the content of the remote machine to the local project.
-- `yarn docker machine <machine> create <driver> [...options]`
+- `machine <machine> create <driver> [...options]`
   Creates a new docker machine. Arguments:
   - `digitalocean`: Specifies DigitalOcean as a driver which accepts following options:
     - `-t|--token`: Access Token used to access DigitalOcean api.
     - `-s|--size`: Size of the droplet (defaults to `1gb`).
     - `-r|--region`: DigitalOcean region in which to create the machine (defaults to `ams3`).
     - `--`: All arguments after this will be passed to the underlying `docker-machine create` command.
+- `generate`
+  Generates various common files:
+  - `ignore`: Generates default `.dockerignore` file.
 
 ## Catch-all commands
 
