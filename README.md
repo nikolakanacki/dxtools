@@ -52,7 +52,6 @@ yarn tools [...options] <command> [...args]
 
 ## Commands
 
-- [`env`](commands/env.md)
 - [`eval`](commands/eval.md)
 - [`docker`](commands/docker.md)
 - [`version`](commands/version.md)
