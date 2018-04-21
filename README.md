@@ -42,3 +42,4 @@ The files are loaded in the following order:
 - [`eval`](commands/eval.md)
 - [`docker`](commands/docker.md)
 - [`version`](commands/version.md)
+- [`generate`](commands/generate.md)
