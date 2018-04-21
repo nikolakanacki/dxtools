@@ -49,6 +49,10 @@ If the installation went well the tool should be available under `yarn docker`. 
   Takes the given path in the local project and "pushes" (uploads) it up to the machine replacing the directory found by resolving the `<path>` from the app root (ssh root).
 - `machine <machine> pull <path>`
   Does exactly the opposite of the equivalent `pull` command: pulls the content of the remote machine to the local project.
+- `machine <machine> mkdir [...paths]`
+  Creates directories in the machine filesystem. Like calling `mkdir -p [...paths]` remotely.
+- `machine <machine> touch [...paths]`
+  Touches files in the machine filesystem. Like calling `touch [...paths]` remotely.
 - `machine <machine> create <driver> [...options]`
   Creates a new docker machine. Arguments:
   - `digitalocean`: Specifies DigitalOcean as a driver which accepts following options:
