@@ -1,13 +1,5 @@
 #!/bin/bash
 
-touch \
-  .env.default \
-  .env.development \
-  .env.development.local \
-  .env.production \
-  .env.production.local \
-  .env;
-
 if [ "$NODE_ENV" != 'production' ]; then
   vars=$(cat \
     .env.default \
@@ -53,14 +45,17 @@ function localizePath {
 ARG_COMMAND="$1"; shift;
 
 case $ARG_COMMAND in
-  "env")
-    exit 0;
-  ;;
-  "eval")
+  'eval')
     eval "$@";
   ;;
-  "docker")
+  'generate')
+    eval "$(localizePath ./commands/generate.sh) $@";
+  ;;
+  'docker')
     eval "$(localizePath ./commands/docker.sh) $@";
+  ;;
+  'version')
+    eval "$(localizePath ./commands/version.sh) $@";
   ;;
   *)
     echo "Error: Command does not exist: $ARG_COMMAND";

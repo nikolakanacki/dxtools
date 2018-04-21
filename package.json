@@ -2,6 +2,9 @@
   "name": "dxtools",
   "version": "0.2.0",
   "license": "UNLICENSED",
+  "scripts": {
+    "tools": "./index.sh"
+  },
   "bin": {
     "dxtools": "./index.sh"
   }

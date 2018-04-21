@@ -2,6 +2,21 @@
 
 ARG_COMMAND="$1"; shift;
 
+ensureComposeFiles() {
+  if ! [ -f docker-compose.yml ]; then
+    echo 'Missing docker-compose.yml';
+    exit 1;
+  fi;
+  if ! [ -f docker-compose.development.yml ]; then
+    echo 'Missing docker-compose.development.yml';
+    exit 1;
+  fi;
+  if ! [ -f docker-compose.production.yml ]; then
+    echo 'Missing docker-compose.production.yml';
+    exit 1;
+  fi;
+}
+
 if [ "$NODE_ENV" != 'production' ]; then
   export COMPOSE_FILE="docker-compose.yml:docker-compose.development.yml";
 else
@@ -9,26 +24,6 @@ else
 fi;
 
 case $ARG_COMMAND in
-  'generate')
-    ARG_COMMAND=$1; shift;
-    case $ARG_COMMAND in
-      'ignore')
-        if [ -f .dockerignore ]; then
-          echo 'File .dockerignore was found. Please remove it before generating new one.';
-          exit 1;
-        else
-          echo '.git' >> .dockerignore;
-          echo 'data' >> .dockerignore;
-          echo 'node_modules' >> .dockerignore;
-          echo '*.tar.gz' >> .dockerignore;
-        fi;
-      ;;
-      *)
-        echo "Invalid generate type: \"$ARG_COMMAND\"";
-        exit 1;
-      ;;
-    esac;
-  ;;
   'clean')
     docker ps -a \
       | grep "${npm_package_name}" \
@@ -36,11 +31,13 @@ case $ARG_COMMAND in
       | xargs docker rm;
   ;;
   'enter')
+    ensureComposeFiles;
     ENTER_CONTAINER_NAME="${npm_package_organization}-${npm_package_name}-$1";
     shift;
     docker exec -ti "$ENTER_CONTAINER_NAME" /bin/bash;
   ;;
   'restart')
+    ensureComposeFiles;
     RESTART_CONTAINER_NAME="${npm_package_organization}-${npm_package_name}-$1";
     shift;
     docker restart "$RESTART_CONTAINER_NAME";
@@ -144,6 +141,7 @@ case $ARG_COMMAND in
     esac;
   ;;
   *)
+    ensureComposeFiles;
     docker-compose $ARG_COMMAND $@;
   ;;
 esac;
