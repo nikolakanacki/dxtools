@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ARG_TARGET=$1;
+ARG_TARGET=$1; shift;
 
 case $ARG_TARGET in
   'env')
@@ -14,28 +14,21 @@ case $ARG_TARGET in
   ;;
   'gitignore')
     if [ -f .gitignore ]; then
-      echo 'File .gitignore was found. Please remove it before generating new one.';
+      echo 'File named .gitignore already exists in your project. Please remove it before generating new one.';
       exit 1;
     fi;
-    $ARG_TARGET=$1; shift;
-    case $ARG_TARGET in
-      'node')
-        echo '# dxtools' >> .gitignore;
-        echo '/data' >> .gitignore;
-        echo '.env.*.local' >> .gitignore;
-        echo '/*.tar.gz' >> .gitignore;
-        echo '' >> .gitignore;
-        curl -L https://raw.githubusercontent.com/github/gitignore/master/Node.gitignore >> .gitignore;
-      ;;
-      *)
-        echo "Gitignore target \"$ARG_TARGET\" not supported";
-        exit 1;
-      ;;
-    esac;
+    ARG_TARGET=$1; shift;
+    echo "$ARG_TARGET";
+    echo '# dxtools' >> .gitignore;
+    echo '/data' >> .gitignore;
+    echo '.env.*.local' >> .gitignore;
+    echo '/*.tar.gz' >> .gitignore;
+    echo '' >> .gitignore;
+    curl "https://raw.githubusercontent.com/github/gitignore/master/${ARG_TARGET}.gitignore" >> .gitignore;
   ;;
   'dockerignore')
     if [ -f .dockerignore ]; then
-      echo 'File .dockerignore was found. Please remove it before generating new one.';
+      echo 'File named .dockerignore already exists in your project. Please remove it before generating new one.';
       exit 1;
     else
       echo '.git' >> .dockerignore;
