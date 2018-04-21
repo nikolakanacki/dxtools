@@ -56,9 +56,6 @@ If the installation went well the tool should be available under `yarn docker`. 
     - `-s|--size`: Size of the droplet (defaults to `1gb`).
     - `-r|--region`: DigitalOcean region in which to create the machine (defaults to `ams3`).
     - `--`: All arguments after this will be passed to the underlying `docker-machine create` command.
-- `generate`
-  Generates various common files:
-  - `ignore`: Generates default `.dockerignore` file.
 
 ## Catch-all commands
 

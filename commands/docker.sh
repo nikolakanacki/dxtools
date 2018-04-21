@@ -24,26 +24,6 @@ else
 fi;
 
 case $ARG_COMMAND in
-  'generate')
-    ARG_COMMAND=$1; shift;
-    case $ARG_COMMAND in
-      'ignore')
-        if [ -f .dockerignore ]; then
-          echo 'File .dockerignore was found. Please remove it before generating new one.';
-          exit 1;
-        else
-          echo '.git' >> .dockerignore;
-          echo 'data' >> .dockerignore;
-          echo 'node_modules' >> .dockerignore;
-          echo '*.tar.gz' >> .dockerignore;
-        fi;
-      ;;
-      *)
-        echo "Invalid generate type: \"$ARG_COMMAND\"";
-        exit 1;
-      ;;
-    esac;
-  ;;
   'clean')
     docker ps -a \
       | grep "${npm_package_name}" \
