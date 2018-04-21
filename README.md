@@ -6,6 +6,8 @@ The following instructions are outlined for the repositories (projects) utilizin
 
 # Setup and prerequisites
 
+Make sure you have both `"name"` and `"organization"` keys set in the target project `package.json` file.
+
 1. Run `yarn add https://github.com/nikolakanacki/dxtools.git`
 2. Add `"tools": "dxtools"` under `"scripts"` key in your `package.json` file.
 

@@ -1,5 +1,15 @@
 #!/bin/bash
 
+if [ -z "$npm_package_name" ]; then
+  echo 'Key "name" is missing from the package.json';
+  exit 1;
+fi;
+
+if [ -z "$npm_package_organization" ]; then
+  echo 'Key "organization" is missing from the package.json';
+  exit 1;
+fi;
+
 if [ "$NODE_ENV" != 'production' ]; then
   vars=$(cat \
     .env.default \
