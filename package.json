@@ -1,7 +1,12 @@
 {
   "name": "dxtools",
+  "organization": "dxtools",
   "version": "0.4.0",
   "license": "UNLICENSED",
+  "author": {
+    "name": "Nikola Kanački",
+    "email": "mail@nikolakanacki.com"
+  },
   "scripts": {
     "tools": "./index.sh"
   },
