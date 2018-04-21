@@ -39,3 +39,4 @@ The files are loaded in the following order:
 - [`env`](commands/env.md)
 - [`eval`](commands/eval.md)
 - [`docker`](commands/docker.md)
+- [`version`](commands/version.md)

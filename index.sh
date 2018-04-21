@@ -53,14 +53,17 @@ function localizePath {
 ARG_COMMAND="$1"; shift;
 
 case $ARG_COMMAND in
-  "env")
+  'env')
     exit 0;
   ;;
-  "eval")
+  'eval')
     eval "$@";
   ;;
-  "docker")
+  'docker')
     eval "$(localizePath ./commands/docker.sh) $@";
+  ;;
+  'version')
+    eval "$(localizePath ./commands/version.sh) $@";
   ;;
   *)
     echo "Error: Command does not exist: $ARG_COMMAND";
