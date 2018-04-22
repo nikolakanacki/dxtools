@@ -40,8 +40,8 @@ If the installation went well the tool should be available under `yarn docker`. 
 
 - `clean`
   Removes all containers which name contains the target repository package name.
-- `enter <service>`
-  Enters an interactive shell connected to the provided service.
+- `enter|exec <service> <command=/bin/bash>`
+  Executes the provided command in the target container. By default (if the command is not specified) it enters /bin/bash).
 - `restart [...service]`
   Restarts the service (or services) if ones are provided, otherwise restarts all containers.
 - `generate `
