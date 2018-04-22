@@ -33,11 +33,11 @@ case $ARG_COMMAND in
   'enter'|'exec')
     ensureComposeFiles;
     CONTAINER_NAME="${npm_package_organization}-${npm_package_name}-$1"; shift;
-    CONTAINER_COMMAND=$1;
+    CONTAINER_COMMAND=$1; shift;
     if [ -z "$CONTAINER_COMMAND" ]; then
       CONTAINER_COMMAND='/bin/bash';
     fi;
-    docker exec -ti "$CONTAINER_NAME" "$CONTAINER_COMMAND";
+    docker exec -ti "$CONTAINER_NAME" "$CONTAINER_COMMAND" $@;
   ;;
   'restart')
     ensureComposeFiles;
