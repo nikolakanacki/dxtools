@@ -44,7 +44,8 @@ If the installation went well the tool should be available under `yarn docker`. 
   Executes the provided command in the target container. By default (if the command is not specified) it enters /bin/bash).
 - `restart [...service]`
   Restarts the service (or services) if ones are provided, otherwise restarts all containers.
-- `generate `
+- `machine <machine> shell`
+  Enter a shell which has the remote machine environment set up. it also suffixes your `PS1` with `(machine)`.
 - `machine <machine> push <path>`
   Takes the given path in the local project and "pushes" (uploads) it up to the machine replacing the directory found by resolving the `<path>` from the app root (ssh root).
 - `machine <machine> pull <path>`
