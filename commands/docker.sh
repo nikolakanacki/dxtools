@@ -102,6 +102,20 @@ case $ARG_COMMAND in
       'touch')
         docker-machine ssh "$ARG_MACHINE" "touch $@";
       ;;
+      'shell')
+        TMP_RC_FILE=$(mktemp);
+        if [ -f ~/.bash_profile ]; then
+          echo 'source ~/.bash_profile' >> $TMP_RC_FILE;
+        fi;
+        if [ -f ~/.bashrc ]; then
+          echo 'source ~/.bashrc' >> $TMP_RC_FILE;
+        fi;
+        docker-machine env "$ARG_MACHINE" >> $TMP_RC_FILE;
+        # echo 'PS1="\[\e]0;\u@\H: \W\a\]${debian_chroot:+($debian_chroot)}\H:\W (machine)\$ ";' >> $TMP_RC_FILE;
+        echo 'PS1="${PS1}(machine) ";' >> $TMP_RC_FILE;
+        echo "rm -f $TMP_RC_FILE" >> $TMP_RC_FILE;
+        bash --rcfile $TMP_RC_FILE;
+      ;;
       'create')
         ARG_DRIVER=$1; shift;
         case $ARG_DRIVER in
