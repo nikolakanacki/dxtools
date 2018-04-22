@@ -30,11 +30,14 @@ case $ARG_COMMAND in
       | awk '{ print $1 }' \
       | xargs docker rm;
   ;;
-  'enter')
+  'enter'|'exec')
     ensureComposeFiles;
-    ENTER_CONTAINER_NAME="${npm_package_organization}-${npm_package_name}-$1";
-    shift;
-    docker exec -ti "$ENTER_CONTAINER_NAME" /bin/bash;
+    CONTAINER_NAME="${npm_package_organization}-${npm_package_name}-$1"; shift;
+    CONTAINER_COMMAND=$1;
+    if [ -z "$CONTAINER_COMMAND" ]; then
+      CONTAINER_COMMAND='/bin/bash';
+    fi;
+    docker exec -ti "$CONTAINER_NAME" "$CONTAINER_COMMAND";
   ;;
   'restart')
     ensureComposeFiles;
