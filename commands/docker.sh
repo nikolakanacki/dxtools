@@ -48,7 +48,7 @@ case $ARG_COMMAND in
   'machine')
     ARG_MACHINE="$1"; shift;
     ARG_COMMAND="$1"; shift;
-    if [ $ARG_MACHINE == '--' ]; then
+    if [ $ARG_MACHINE == '-' ]; then
       ARG_MACHINE="${npm_package_organization}-${npm_package_name}";
     elif [[ $ARG_MACHINE == -* ]]; then
       ARG_MACHINE="${npm_package_organization}-${npm_package_name}${ARG_MACHINE}";
