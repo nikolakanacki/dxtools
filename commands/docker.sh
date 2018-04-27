@@ -113,6 +113,25 @@ case $ARG_COMMAND in
         docker-machine env "$ARG_MACHINE" >> $TMP_RC_FILE;
         # echo 'PS1="\[\e]0;\u@\H: \W\a\]${debian_chroot:+($debian_chroot)}\H:\W (machine)\$ ";' >> $TMP_RC_FILE;
         echo 'PS1="${PS1}(machine) ";' >> $TMP_RC_FILE;
+        while test $# -gt 0; do
+          arg=$1; shift;
+          case $arg in
+            '-p'|'--production')
+              echo "export NODE_ENV='production';" >> $TMP_RC_FILE;
+            ;;
+            '-d'|'--development')
+              echo "export NODE_ENV='development';" >> $TMP_RC_FILE;
+            ;;
+            '-e'|'--environment')
+              echo "export NODE_ENV='$1';" >> $TMP_RC_FILE;
+              shift;
+            ;;
+            *)
+              echo "Invalid argument \"$arg\"";
+              exit 1;
+            ;;
+          esac;
+        done;
         echo "rm -f $TMP_RC_FILE" >> $TMP_RC_FILE;
         bash --rcfile $TMP_RC_FILE;
       ;;
