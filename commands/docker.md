@@ -46,6 +46,10 @@ If the installation went well the tool should be available under `yarn docker`. 
   Restarts the service (or services) if ones are provided, otherwise restarts all containers.
 - `machine <machine> shell`
   Enter a shell which has the remote machine environment set up. it also suffixes your `PS1` with `(machine)`.
+  Options:
+  - `-p`: Define NODE_ENV=production for the inner shell.
+  - `-d`: Define NODE_ENV=development for the inner shell.
+  - `-e <value>`: Define NODE_ENV=<value> for the inner shell (value must not contain `'` (single quote)).
 - `machine <machine> push <path>`
   Takes the given path in the local project and "pushes" (uploads) it up to the machine replacing the directory found by resolving the `<path>` from the app root (ssh root).
 - `machine <machine> pull <path>`
