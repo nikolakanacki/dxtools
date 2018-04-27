@@ -45,6 +45,9 @@ case $ARG_COMMAND in
     shift;
     docker restart "$RESTART_CONTAINER_NAME";
   ;;
+  'machine-import')
+    machine-import "$1"; shift;
+  ;;
   'machine')
     ARG_MACHINE="$1"; shift;
     ARG_COMMAND="$1"; shift;
@@ -134,6 +137,12 @@ case $ARG_COMMAND in
         done;
         echo "rm -f $TMP_RC_FILE" >> $TMP_RC_FILE;
         bash --rcfile $TMP_RC_FILE;
+      ;;
+      'export')
+        machine-export "${ARG_MACHINE}";
+      ;;
+      'import')
+        machine-import "${ARG_MACHINE}.zip";
       ;;
       'create')
         ARG_DRIVER=$1; shift;
