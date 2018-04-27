@@ -12,5 +12,8 @@
   },
   "bin": {
     "dxtools": "./index.sh"
+  },
+  "dependencies": {
+    "machine-share": "^0.1.2"
   }
 }

@@ -44,6 +44,8 @@ If the installation went well the tool should be available under `yarn docker`. 
   Executes the provided command in the target container. By default (if the command is not specified) it enters /bin/bash).
 - `restart [...service]`
   Restarts the service (or services) if ones are provided, otherwise restarts all containers.
+- `machine-import <machine-export-path>`
+  Import a machine from an exported machine zip file located at `<machine-export-path>` (see `machine <machine> export`).
 - `machine <machine> shell`
   Enter a shell which has the remote machine environment set up. it also suffixes your `PS1` with `(machine)`.
   Options:
@@ -58,6 +60,10 @@ If the installation went well the tool should be available under `yarn docker`. 
   Creates directories in the machine filesystem. Like calling `mkdir -p [...paths]` remotely.
 - `machine <machine> touch [...paths]`
   Touches files in the machine filesystem. Like calling `touch [...paths]` remotely.
+- `machine <machine> export`
+  Exports machine to the current working directory.
+- `machine <machine> import`
+  Imports machine from the current working directory (if you want to specify the path manually see `docker machine-import`).
 - `machine <machine> create <driver> [...options]`
   Creates a new docker machine. Arguments:
   - `digitalocean`: Specifies DigitalOcean as a driver which accepts following options:
