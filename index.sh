@@ -1,15 +1,5 @@
 #!/bin/bash
 
-if [ -z "$npm_package_name" ]; then
-  echo 'Key "name" is missing from the package.json';
-  exit 1;
-fi;
-
-if [ -z "$npm_package_organization" ]; then
-  echo 'Key "organization" is missing from the package.json';
-  exit 1;
-fi;
-
 function normalizePath {
   local path=${1//\/.\//\/};
   while [[ $path =~ ([^/][^/]*/\.\./) ]]; do
@@ -27,6 +17,24 @@ function localizePath {
   done;
   echo $(normalizePath "$(cd -P "$(dirname "$SOURCE")" && pwd)/$1");
 }
+
+if [ "$1" == '--version' ] || [ "$1" == '-v' ]; then
+  cat $(localizePath ./package.json) \
+  | grep '"version":' \
+  | awk '{ print $2 }' \
+  | sed 's/[",]//g';
+  exit 0;
+fi;
+
+if [ -z "$npm_package_name" ]; then
+  echo 'Key "name" is missing from the package.json';
+  exit 1;
+fi;
+
+if [ -z "$npm_package_organization" ]; then
+  echo 'Key "organization" is missing from the package.json';
+  exit 1;
+fi;
 
 function setupEnvironment {
   if [ "$NODE_ENV" != 'production' ]; then
