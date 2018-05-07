@@ -64,37 +64,74 @@ case $ARG_COMMAND in
         ARG_NAME=${ARG_TARGET//\//-};
         ARG_NAME_TAR="${ARG_NAME}.tar.gz";
         ARG_PUSH_SOURCE="./$ARG_TARGET";
+        ARG_PUSH_SOURCE_DIR="$(dirname $ARG_PUSH_SOURCE)";
+        ARG_PUSH_SOURCE_FILENAME="$(basename $ARG_PUSH_SOURCE)";
         ARG_PUSH_DESTINATION="/root/$ARG_TARGET";
+        ARG_PUSH_DESTINATION_DIR="$(dirname $ARG_PUSH_DESTINATION)";
         rm -rf "$ARG_NAME_TAR";
-        tar -zcvf "$ARG_NAME_TAR" -C "$ARG_PUSH_SOURCE" .;
-        docker-machine scp \
-          "$ARG_NAME_TAR" \
-          "$ARG_MACHINE:/root/$ARG_NAME_TAR";
-        docker-machine ssh "$ARG_MACHINE" "true \
-          && rm -rf $ARG_PUSH_DESTINATION/** \
-          && mkdir -p $ARG_PUSH_DESTINATION \
-          && tar -xf $ARG_NAME_TAR -C $ARG_PUSH_DESTINATION \
-          && rm -rf $ARG_NAME_TAR";
+        if [ -f "$ARG_PUSH_SOURCE" ]; then
+          echo "PUSHING A FILE";
+          tar -zcvf "$ARG_NAME_TAR" -C "$ARG_PUSH_SOURCE_DIR" .;
+          docker-machine scp \
+            "$ARG_NAME_TAR" \
+            "$ARG_MACHINE:/root/$ARG_NAME_TAR";
+          docker-machine ssh "$ARG_MACHINE" "true \
+            && mkdir -p $ARG_PUSH_DESTINATION_DIR \
+            && tar -xO -C $ARG_PUSH_DESTINATION_DIR -f $ARG_NAME_TAR ./$ARG_PUSH_SOURCE_FILENAME > $ARG_PUSH_DESTINATION \
+            && rm -rf $ARG_NAME_TAR";
+        elif [ -d "$ARG_PUSH_SOURCE" ]; then
+          echo "PUSHING A DIRECTORY";
+          tar -zcvf "$ARG_NAME_TAR" -C "$ARG_PUSH_SOURCE" .;
+          docker-machine scp \
+            "$ARG_NAME_TAR" \
+            "$ARG_MACHINE:/root/$ARG_NAME_TAR";
+          docker-machine ssh "$ARG_MACHINE" "true \
+            && rm -rf $ARG_PUSH_DESTINATION/** \
+            && mkdir -p $ARG_PUSH_DESTINATION \
+            && tar -xf $ARG_NAME_TAR -C $ARG_PUSH_DESTINATION \
+            && rm -rf $ARG_NAME_TAR";
+        fi;
       ;;
       'pull')
         ARG_TARGET="$1"; shift;
         ARG_NAME=${ARG_TARGET//\//-};
         ARG_NAME_TAR="${ARG_NAME}.tar.gz";
         ARG_PULL_SOURCE="/root/$ARG_TARGET";
+        ARG_PULL_SOURCE_DIR="$(dirname $ARG_PULL_SOURCE)";
+        ARG_PULL_SOURCE_FILENAME="$(basename $ARG_PULL_SOURCE)";
         ARG_PULL_DESTINATION="./$ARG_TARGET";
-        docker-machine ssh "$ARG_MACHINE" "true \
-          && rm -rf $ARG_NAME_TAR \
-          && mkdir -p $ARG_PULL_SOURCE \
-          && tar -zcvf $ARG_NAME_TAR -C $ARG_PULL_SOURCE .";
-        rm -rf "$ARG_NAME_TAR";
+        ARG_PULL_DESTINATION_DIR="$(dirname $ARG_PULL_DESTINATION)";
+        ARG_SOURCE_TYPE=$(docker-machine ssh "$ARG_MACHINE" -- "bash -s" << EOF
+          {
+            rm -rf "$ARG_NAME_TAR" 1>&2;
+            if [ -f "$ARG_PULL_SOURCE" ]; then
+              echo "file";
+              mkdir -p "$ARG_PULL_SOURCE_DIR" 1>&2;
+              tar -zcvf "$ARG_NAME_TAR" -C "$ARG_PULL_SOURCE_DIR" . 1>&2;
+            elif [ -d "$ARG_PULL_SOURCE" ]; then
+              echo "directory";
+              mkdir -p "$ARG_PULL_SOURCE" 1>&2;
+              tar -zcvf "$ARG_NAME_TAR" -C "$ARG_PULL_SOURCE" . 1>&2;
+            fi;
+          }
+EOF
+        );
         docker-machine scp \
           "$ARG_MACHINE:/root/$ARG_NAME_TAR" \
           "$ARG_NAME_TAR";
-        rm -rf "$ARG_PULL_DESTINATION/**";
-        mkdir -p "$ARG_PULL_DESTINATION";
-        tar -xf "$ARG_NAME_TAR" -C "$ARG_PULL_DESTINATION";
+        if [ $ARG_SOURCE_TYPE == 'file' ]; then
+          mkdir -p "$ARG_PULL_DESTINATION_DIR";
+          tar -x -O \
+            -C $ARG_PULL_DESTINATION_DIR \
+            -f $ARG_NAME_TAR \
+            ./$ARG_PULL_SOURCE_FILENAME > $ARG_PULL_DESTINATION
+        elif [ $ARG_SOURCE_TYPE == 'directory' ]; then
+          rm -rf "$ARG_PULL_DESTINATION/**";
+          mkdir -p "$ARG_PULL_DESTINATION";
+          tar -xf "$ARG_NAME_TAR" -C "$ARG_PULL_DESTINATION";
+        fi;
         docker-machine ssh "$ARG_MACHINE" "true \
-          && rm -rf $ARG_NAME_TAR";
+        && rm -rf $ARG_NAME_TAR";
       ;;
       'exec')
         docker-machine ssh "$ARG_MACHINE" "$@";
