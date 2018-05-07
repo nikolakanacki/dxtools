@@ -70,7 +70,6 @@ case $ARG_COMMAND in
         ARG_PUSH_DESTINATION_DIR="$(dirname $ARG_PUSH_DESTINATION)";
         rm -rf "$ARG_NAME_TAR";
         if [ -f "$ARG_PUSH_SOURCE" ]; then
-          echo "PUSHING A FILE";
           tar -zcvf "$ARG_NAME_TAR" -C "$ARG_PUSH_SOURCE_DIR" .;
           docker-machine scp \
             "$ARG_NAME_TAR" \
@@ -80,7 +79,6 @@ case $ARG_COMMAND in
             && tar -xO -C $ARG_PUSH_DESTINATION_DIR -f $ARG_NAME_TAR ./$ARG_PUSH_SOURCE_FILENAME > $ARG_PUSH_DESTINATION \
             && rm -rf $ARG_NAME_TAR";
         elif [ -d "$ARG_PUSH_SOURCE" ]; then
-          echo "PUSHING A DIRECTORY";
           tar -zcvf "$ARG_NAME_TAR" -C "$ARG_PUSH_SOURCE" .;
           docker-machine scp \
             "$ARG_NAME_TAR" \
