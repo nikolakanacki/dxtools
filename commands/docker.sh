@@ -60,7 +60,7 @@ case $ARG_COMMAND in
     fi;
     case $ARG_COMMAND in
       'push')
-        ARG_TARGET="$1"; shift;
+        ARG_TARGET="$(echo $1 | sed 's|^./||')"; shift;
         ARG_NAME=${ARG_TARGET//\//-};
         ARG_NAME_TAR="${ARG_NAME}.tar.gz";
         ARG_PUSH_SOURCE="./$ARG_TARGET";
@@ -91,7 +91,7 @@ case $ARG_COMMAND in
         fi;
       ;;
       'pull')
-        ARG_TARGET="$1"; shift;
+        ARG_TARGET="$(echo $1 | sed 's|^./||')"; shift;
         ARG_NAME=${ARG_TARGET//\//-};
         ARG_NAME_TAR="${ARG_NAME}.tar.gz";
         ARG_PULL_SOURCE="/root/$ARG_TARGET";
