@@ -27,12 +27,12 @@ if [ "$1" == '--version' ] || [ "$1" == '-v' ]; then
 fi;
 
 if [ -z "$npm_package_name" ]; then
-  echo 'Key "name" is missing from the package.json';
+  echo '=> Error: Key "name" is missing from the package.json';
   exit 1;
 fi;
 
 if [ -z "$npm_package_organization" ]; then
-  echo 'Key "organization" is missing from the package.json';
+  echo '=> Error: Key "organization" is missing from the package.json';
   exit 1;
 fi;
 
@@ -79,7 +79,7 @@ while test $# -gt 0; do
       cd $1; shift;
     ;;
     *)
-      echo "Error: Command does not exist: $ARG_COMMAND";
+      echo "=> Error: Command does not exist: $ARG_COMMAND";
       exit 1;
     ;;
   esac;

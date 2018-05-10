@@ -53,8 +53,8 @@ If the installation went well the tool should be available under `yarn docker`. 
   - `-d`: Define NODE_ENV=development for the inner shell.
   - `-e <value>`: Define NODE_ENV=<value> for the inner shell (value must not contain `'` (single quote)).
 - `machine <machine> push <path>`
-  Takes the given path in the local project and "pushes" (uploads) it up to the machine replacing the directory found by resolving the `<path>` from the app root (ssh root).
-- `machine <machine> pull <path>`
+  Takes the given path in the local project and "pushes" (uploads) it up to the machine replacing the directory found by resolving the `<path>` from the app root (ssh root). If `<path>` is a file and it exists remotely - it is overwritten without removal.
+- `machine <machine> pull <path>`. If `<path>` is a file and it exists locally - it is overwritten without removal.
   Does exactly the opposite of the equivalent `pull` command: pulls the content of the remote machine to the local project.
 - `machine <machine> mkdir [...paths]`
   Creates directories in the machine filesystem. Like calling `mkdir -p [...paths]` remotely.

@@ -14,11 +14,10 @@ case $ARG_TARGET in
   ;;
   'gitignore')
     if [ -f .gitignore ]; then
-      echo 'File named .gitignore already exists in your project. Please remove it before generating new one.';
+      echo '=> Error: File named .gitignore already exists in your project. Please remove it before generating new one.';
       exit 1;
     fi;
     ARG_TARGET=$1; shift;
-    echo "$ARG_TARGET";
     echo '# dxtools' >> .gitignore;
     echo '/data' >> .gitignore;
     echo '.env.*.local' >> .gitignore;
@@ -28,7 +27,7 @@ case $ARG_TARGET in
   ;;
   'dockerignore')
     if [ -f .dockerignore ]; then
-      echo 'File named .dockerignore already exists in your project. Please remove it before generating new one.';
+      echo '=> Error: File named .dockerignore already exists in your project. Please remove it before generating new one.';
       exit 1;
     else
       echo '.git' >> .dockerignore;
@@ -38,7 +37,7 @@ case $ARG_TARGET in
     fi;
   ;;
   *)
-    echo "Invalid generate target: \"$ARG_COMMAND\"";
+    echo "=> Error: Invalid generate target: \"$ARG_COMMAND\"";
     exit 1;
   ;;
 esac;

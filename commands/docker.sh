@@ -4,15 +4,15 @@ ARG_COMMAND="$1"; shift;
 
 ensureComposeFiles() {
   if ! [ -f docker-compose.yml ]; then
-    echo 'Missing docker-compose.yml';
+    echo '=> Error: Missing docker-compose.yml';
     exit 1;
   fi;
   if ! [ -f docker-compose.development.yml ]; then
-    echo 'Missing docker-compose.development.yml';
+    echo '=> Error: Missing docker-compose.development.yml';
     exit 1;
   fi;
   if ! [ -f docker-compose.production.yml ]; then
-    echo 'Missing docker-compose.production.yml';
+    echo '=> Error: Missing docker-compose.production.yml';
     exit 1;
   fi;
 }
@@ -165,13 +165,14 @@ EOF
               shift;
             ;;
             *)
-              echo "Invalid argument \"$arg\"";
+              echo "=> Error: Invalid argument \"$arg\"";
               exit 1;
             ;;
           esac;
         done;
         echo "rm -f $TMP_RC_FILE" >> $TMP_RC_FILE;
         bash --rcfile $TMP_RC_FILE;
+        rm -rf $TMP_RC_FILE;
       ;;
       'export')
         machine-export "${ARG_MACHINE}";
@@ -205,7 +206,7 @@ EOF
                   break;
                 ;;
                 *)
-                  echo "Invalid argument \"$arg\"";
+                  echo "=> Error: Invalid argument \"$arg\"";
                   exit 1;
                 ;;
               esac;
@@ -219,7 +220,7 @@ EOF
               $@;
           ;;
           *)
-            echo "Driver \"$ARG_DRIVER\" not supported";
+            echo "=> Error: Driver \"$ARG_DRIVER\" not supported";
             exit 1;
           ;;
         esac;
