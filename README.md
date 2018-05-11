@@ -55,4 +55,5 @@ yarn tools [...options] <command> [...args]
 - [`eval`](commands/eval.md)
 - [`docker`](commands/docker.md)
 - [`version`](commands/version.md)
+- [`release`](commands/release.md)
 - [`generate`](commands/generate.md)
