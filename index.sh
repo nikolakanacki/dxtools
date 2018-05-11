@@ -70,7 +70,7 @@ while test $# -gt 0; do
       eval "$@";
       exit 0;
     ;;
-    'generate'|'docker'|'version')
+    'generate'|'docker'|'version'|'release')
       setupEnvironment;
       eval "$(localizePath ./commands/${ARG_COMMAND}.sh) $@";
       exit 0;
