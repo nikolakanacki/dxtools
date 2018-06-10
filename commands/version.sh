@@ -8,7 +8,22 @@ elif [ "$(git symbolic-ref --short -q HEAD)" != 'master' ]; then
   exit 1;
 fi;
 
-npm --no-git-tag-version version $1;
+if [ "$2" != '' ]; then
+  npm_package_new_version=$(\
+    semver \
+    $npm_package_version \
+    --increment $1 \
+    --preid $2\
+  );
+else
+  npm_package_new_version=$(\
+    semver \
+    $npm_package_version \
+    --increment $1 \
+  );
+fi;
+
+npm --no-git-tag-version version $npm_package_new_version;
 
 git add .;
 yarn tools eval 'git commit -m "chore: version bump ($npm_package_version)"';
