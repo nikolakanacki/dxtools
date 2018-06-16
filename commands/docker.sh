@@ -77,7 +77,8 @@ case $ARG_COMMAND in
           docker-machine ssh "$ARG_MACHINE" "true \
             && mkdir -p $ARG_PUSH_DESTINATION_DIR \
             && tar -xO -C $ARG_PUSH_DESTINATION_DIR -f $ARG_NAME_TAR $ARG_PUSH_SOURCE_FILENAME > $ARG_PUSH_DESTINATION \
-            && rm -rf $ARG_NAME_TAR";
+            && rm -rf $ARG_NAME_TAR \
+            && chown -R root:root $ARG_PUSH_DESTINATION_DIR";
         elif [ -d "$ARG_PUSH_SOURCE" ]; then
           tar -zcvf "$ARG_NAME_TAR" -C "$ARG_PUSH_SOURCE" .;
           docker-machine scp \
@@ -87,7 +88,8 @@ case $ARG_COMMAND in
             && rm -rf $ARG_PUSH_DESTINATION/** \
             && mkdir -p $ARG_PUSH_DESTINATION \
             && tar -xf $ARG_NAME_TAR -C $ARG_PUSH_DESTINATION \
-            && rm -rf $ARG_NAME_TAR";
+            && rm -rf $ARG_NAME_TAR \
+            && chown -R root:root $ARG_PUSH_DESTINATION_DIR";
         fi;
       ;;
       'pull')
