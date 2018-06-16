@@ -37,8 +37,10 @@ fi;
 echo '=> Going back to dev for a version bump';
 git checkout dev &>/dev/null;
 
-echo '=> Performing a version bump';
+echo '=> Generating release changelog';
+newVersionChangelog="$(git log master..dev --pretty=format:'- %h %s')";
 
+echo '=> Performing a version bump';
 newVersion=$(dxtools version "$@");
 
 if [ -z "$newVersion" ]; then
@@ -46,12 +48,15 @@ if [ -z "$newVersion" ]; then
   exit 1;
 fi;
 
+newMessage="Release v${newVersion}\n\n${newVersionChangelog}";
+
 echo '=> Checking out master for a merge';
 git checkout master &>/dev/null \
-  && echo '=> Performing the merge with log included' \
-  && git merge --log=10000 --no-ff --no-edit dev \
+  && echo '=> Performing the merge with changelog' \
+  && git merge --no-ff --no-edit dev \
+  && echo -e "$newMessage" | git commit --amend --file - \
   && echo '=> Moving git tag to the merge commit' \
-  && git tag -f "v${newVersion}" \
+  && echo -e "$newMessage" | git tag -f "v${newVersion}" --file - \
   && echo '=> Pushing to master' \
   && git push && git push --tags \
   && echo '=> Going back to dev for a merge' \

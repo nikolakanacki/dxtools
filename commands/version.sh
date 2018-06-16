@@ -53,7 +53,7 @@ fi;
 npm --no-git-tag-version version $npm_package_new_version 1>&2;
 
 git add . 1>&2;
-yarn tools eval 'git commit -m "chore: version bump ($npm_package_version)"' 1>&2;
-yarn tools eval 'git tag -f v$npm_package_version' 1>&2;
+git commit -m "chore: version bump (${npm_package_new_version})" 1>&2;
+git tag -a "v${npm_package_new_version}" -m "Release v${npm_package_new_version}" 1>&2;
 
 echo $npm_package_new_version;
