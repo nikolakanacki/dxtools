@@ -32,7 +32,7 @@ if [ "$argPreid" != '' ]; then
   );
 else
   case "$argVersion" in
-    'major'|'minor'|'patch')
+    'major'|'minor'|'patch'|'prerelease')
       npm_package_new_version=$(\
         semver \
         $npm_package_version \
