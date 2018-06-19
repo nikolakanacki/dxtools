@@ -14,7 +14,9 @@
     "dxtools": "./index.sh"
   },
   "dependencies": {
+    "html-to-text": "^4.0.0",
     "machine-share": "^0.1.2",
-    "semver": "^5.5.0"
+    "semver": "^5.5.0",
+    "showdown": "^1.8.6"
   }
 }
