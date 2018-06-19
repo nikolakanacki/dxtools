@@ -62,21 +62,79 @@ function setupEnvironment {
   fi;
 }
 
+function printHelp {
+  cat <<EOF | node
+  const fs = require('fs');
+  const h2t = require('html-to-text');
+  const format = require('html-to-text/lib/formatter');
+  const showdown = require('showdown');
+  const converter = new showdown.Converter({
+    disableForced4SpacesIndentedSublists: true,
+    simpleLineBreaks: true,
+  });
+
+  process.stdout.write(
+    \`\${
+      h2t.fromString(
+        converter.makeHtml(fs.readFileSync('`localizePath $1`', 'utf8')),
+        {
+          singleNewLineParagraphs: true,
+          wordwrap: 79,
+          format: {
+            unorderedList: (elem, fn, options) => {
+              return \`\n\${format.unorderedList(elem, fn, options)}\`;
+            },
+            orderedList: (elem, fn, options) => {
+              return \`\n\${format.orderedList(elem, fn, options)}\`;
+            },
+            blockquote: (elem, fn, options) => {
+              return \`\n\n> \${\`\${fn(elem.children, options)}\`.trim()}\n\n\`;
+            },
+            heading: (elem, fn, options) => {
+              return \`\n\n\${format.heading(elem, fn, options)}\n\n\`;
+            },
+          },
+        }
+      )
+      .replace(/(^[\t ]+$)/gm, '\n')
+      .replace(/\n{2,}/g, '\n\n')
+      .replace(/^\n+|\n+$/, '\n')
+    }\n\n\`,
+    () => process.exit(0),
+  );
+EOF
+}
+
 while test $# -gt 0; do
   ARG_COMMAND="$1"; shift;
   case $ARG_COMMAND in
     'eval')
       setupEnvironment;
-      eval "$@";
-      exit 0;
+      if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
+        shift;
+        printHelp "./commands/${ARG_COMMAND}.md";
+        exit 0;
+      else
+        eval "$@";
+      fi;
     ;;
     'generate'|'docker'|'version'|'release')
       setupEnvironment;
-      eval "$(localizePath ./commands/${ARG_COMMAND}.sh) $@";
-      exit 0;
+      if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
+        shift;
+        printHelp "./commands/${ARG_COMMAND}.md";
+        exit 0;
+      else
+        eval "$(localizePath ./commands/${ARG_COMMAND}.sh) $@";
+        exit 0;
+      fi;
     ;;
     '-c'|'--cd')
       cd $1; shift;
+    ;;
+    '--help'|'-h')
+      printHelp "./README.md";
+      exit 0;
     ;;
     *)
       echo "=> Error: Command does not exist: $ARG_COMMAND";
