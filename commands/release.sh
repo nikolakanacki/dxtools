@@ -15,9 +15,6 @@ elif [ $(git rev-parse HEAD) != $(git rev-parse @{u}) ]; then
 elif ! git rev-parse --abbrev-ref --symbolic-full-name '@{u}' &>/dev/null; then
   echo '=> Error: Dev branch does not seem to have a remote tracking branch';
   exit 1;
-elif [ $(git log --oneline dev ^master | wc -l) == "0" ]; then
-  echo '=> Error: Dev branch does not seem to be ahead of master';
-  exit 1;
 fi;
 
 echo '=> Checking out master for testing';
