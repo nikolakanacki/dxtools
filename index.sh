@@ -115,7 +115,11 @@ while test $# -gt 0; do
         printHelp "./commands/${ARG_COMMAND}.md";
         exit 0;
       else
-        eval "$@";
+        if eval "$@"; then
+          exit 0;
+        else
+          exit 1;
+        fi;
       fi;
     ;;
     'generate'|'docker'|'version'|'release')
