@@ -48,7 +48,7 @@ yarn tools [...options] <command> [...args]
 
 ## Options
 
-- `-c|--cd <path>`: Change directory to `<path>` before running the environment and running a command.
+- `-d|--cd <path>`: Change directory to `<path>` before running a command (after creating the environment).
 
 ## Commands
 

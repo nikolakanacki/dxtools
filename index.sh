@@ -36,32 +36,6 @@ if [ -z "$npm_package_organization" ]; then
   exit 1;
 fi;
 
-function setupEnvironment {
-  if [ "$NODE_ENV" != 'production' ]; then
-    vars=$(cat \
-      .env.default \
-      .env.development \
-      .env.development.local \
-      .env \
-      2>/dev/null | xargs \
-    );
-    if ! [ -z "$vars" ]; then
-      export $vars;
-    fi;
-  else
-    vars=$(cat \
-      .env.default \
-      .env.production \
-      .env.production.local \
-      .env \
-      2>/dev/null | xargs \
-    );
-    if ! [ -z "$vars" ]; then
-      export $vars;
-    fi;
-  fi;
-}
-
 function printHelp {
   cat <<EOF | node
   const fs = require('fs');
@@ -105,16 +79,40 @@ function printHelp {
 EOF
 }
 
+if [ "$NODE_ENV" != 'production' ]; then
+  vars=$(cat \
+    .env.default \
+    .env.development \
+    .env.development.local \
+    .env \
+    2>/dev/null | xargs \
+  );
+  if ! [ -z "$vars" ]; then
+    export $vars;
+  fi;
+else
+  vars=$(cat \
+    .env.default \
+    .env.production \
+    .env.production.local \
+    .env \
+    2>/dev/null | xargs \
+  );
+  if ! [ -z "$vars" ]; then
+    export $vars;
+  fi;
+fi;
+
 while test $# -gt 0; do
   ARG_COMMAND="$1"; shift;
   case $ARG_COMMAND in
     'eval')
-      setupEnvironment;
       if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
         shift;
         printHelp "./commands/${ARG_COMMAND}.md";
         exit 0;
       else
+        echo "$URL_API";
         if eval "$@"; then
           exit 0;
         else
@@ -123,7 +121,6 @@ while test $# -gt 0; do
       fi;
     ;;
     'generate'|'docker'|'version'|'release')
-      setupEnvironment;
       if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
         shift;
         printHelp "./commands/${ARG_COMMAND}.md";
@@ -133,7 +130,7 @@ while test $# -gt 0; do
         exit 0;
       fi;
     ;;
-    '-c'|'--cd')
+    '-d'|'--cd')
       cd $1; shift;
     ;;
     '--help'|'-h')
