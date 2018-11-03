@@ -1,7 +1,7 @@
 # Docker
 
 ```bash
-yarn tools docker <cmd> [...args]
+yarn tools docker [...options] <cmd> [...args]
 ```
 
 > Enhances DX while developing and deploying with docker, ensures proper environment is loaded, etc.
@@ -35,6 +35,11 @@ If the installation went well the tool should be available under `yarn docker`. 
   - Machine name suffix (must start with `-`): Machine name equals to `${npm_package_organization}-${npm_package_name}${SUFFIX}`.
   - Literal `-`: Machine name equals `${npm_package_organization}-${npm_package_name}`.
 - `<path>`: Refers to the path targeting a directory in the project without a leading `./` or `/`. Nested paths are allowed (example: `data/storage`).
+
+## Common options
+
+- `--no-ssh-keys`
+  User ssh keys (located in ~/.ssh) are exported as environment variables `ID_RSA` and `ID_RSA_PUB` so they can be used during the build process, etc. Pass this flag to prevent this behaviour.
 
 ## Commands
 
