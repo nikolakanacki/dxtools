@@ -51,9 +51,9 @@ if [ -z "$npm_package_new_version" ]; then
 fi;
 
 if [ -x ./scripts/version.sh ]; then
-  echo '=> Running custom version script';
-  if ! npm_package_new_version="$npm_package_new_version" ./scripts/version.sh; then
-    echo '=> Error: Script exited with non 0 exit code';
+  echo '=> Running custom version script' 1>&2;
+  if ! npm_package_new_version="$npm_package_new_version" ./scripts/version.sh 1>&2; then
+    echo '=> Error: Script exited with non 0 exit code' 1>&2;
     exit 1;
   fi;
 fi;
