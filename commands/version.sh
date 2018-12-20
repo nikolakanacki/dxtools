@@ -50,6 +50,14 @@ if [ -z "$npm_package_new_version" ]; then
   exit 1;
 fi;
 
+if [ -x ./scripts/version.sh ]; then
+  echo '=> Running custom version script';
+  if ! npm_package_new_version="$npm_package_new_version" ./scripts/version.sh; then
+    echo '=> Error: Script exited with non 0 exit code';
+    exit 1;
+  fi;
+fi;
+
 npm --no-git-tag-version version $npm_package_new_version 1>&2;
 
 git add . 1>&2;
