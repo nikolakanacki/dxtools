@@ -170,7 +170,7 @@ EOF
               fi;
               docker-machine env "$ARG_MACHINE" >> $TMP_RC_FILE;
               # echo 'PS1="\[\e]0;\u@\H: \W\a\]${debian_chroot:+($debian_chroot)}\H:\W (machine)\$ ";' >> $TMP_RC_FILE;
-              echo 'PS1="${PS1}(machine) ";' >> $TMP_RC_FILE;
+              echo 'PS1="${PS1}(dm:'"$ARG_MACHINE"') ";' >> $TMP_RC_FILE;
               while test $# -gt 0; do
                 arg=$1; shift;
                 case $arg in
