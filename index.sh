@@ -124,7 +124,7 @@ while test $# -gt 0; do
           .env \
           2>/dev/null | xargs
       );
-      if ! [ -z $vars ]; then
+      if ! [ -z "$vars" ]; then
         export $vars;
       fi;
       export DXTOOLS_ENV;
