@@ -10,6 +10,8 @@ case $ARG_TARGET in
       .env.development.local \
       .env.production \
       .env.production.local \
+      .env.staging \
+      .env.staging.local \
       .env;
   ;;
   'gitignore')

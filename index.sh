@@ -18,6 +18,15 @@ function localizePath {
   echo $(normalizePath "$(cd -P "$(dirname "$SOURCE")" && pwd)/$1");
 }
 
+function getEnvVars {
+  cat \
+    .env.default \
+    ".env.${1}" \
+    ".env.${1}.local" \
+    .env \
+    2>/dev/null | xargs;
+}
+
 if [ "$1" == '--version' ] || [ "$1" == '-v' ]; then
   cat $(localizePath ./package.json) \
   | grep '"version":' \
@@ -79,56 +88,25 @@ function printHelp {
 EOF
 }
 
-if [ "$NODE_ENV" != 'production' ]; then
-  vars=$(cat \
-    .env.default \
-    .env.development \
-    .env.development.local \
-    .env \
-    2>/dev/null | xargs \
-  );
-  if ! [ -z "$vars" ]; then
-    export $vars;
-  fi;
-else
-  vars=$(cat \
-    .env.default \
-    .env.production \
-    .env.production.local \
-    .env \
-    2>/dev/null | xargs \
-  );
-  if ! [ -z "$vars" ]; then
-    export $vars;
-  fi;
+if [ -z "$DXTOOLS_ENV" ]; then
+  DXTOOLS_ENV='development';
 fi;
 
 while test $# -gt 0; do
   ARG_COMMAND="$1"; shift;
   case $ARG_COMMAND in
-    'eval')
-      if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
-        shift;
-        printHelp "./commands/${ARG_COMMAND}.md";
-        exit 0;
-      else
-        echo "$URL_API";
-        if eval "$@"; then
-          exit 0;
-        else
-          exit 1;
-        fi;
-      fi;
+    '-ed')
+      DXTOOLS_ENV="development";
     ;;
-    'generate'|'docker'|'version'|'release')
-      if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
-        shift;
-        printHelp "./commands/${ARG_COMMAND}.md";
-        exit 0;
-      else
-        eval "$(localizePath ./commands/${ARG_COMMAND}.sh) $@";
-        exit 0;
-      fi;
+    '-ep')
+      DXTOOLS_ENV="production";
+    ;;
+    '-es')
+      DXTOOLS_ENV="staging"
+    ;;
+    '-e|--env')
+      DXTOOLS_ENV="$1";
+      shift;
     ;;
     '-d'|'--cd')
       cd $1; shift;
@@ -138,8 +116,61 @@ while test $# -gt 0; do
       exit 0;
     ;;
     *)
-      echo "=> Error: Command does not exist: $ARG_COMMAND";
-      exit 1;
+      vars=$(
+        cat \
+          .env.default \
+          ".env.${1}" \
+          ".env.${1}.local" \
+          .env \
+          2>/dev/null | xargs
+      );
+      if ! [ -z $vars ]; then
+        export $vars;
+      fi;
+      export DXTOOLS_ENV;
+      case $ARG_COMMAND in
+        'eval')
+          if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
+            shift;
+            printHelp "./commands/${ARG_COMMAND}.md";
+            exit 0;
+          else
+            if eval "$@"; then
+              exit 0;
+            else
+              exit 1;
+            fi;
+          fi;
+        ;;
+        'shell')
+          TMP_RC_FILE=$(mktemp);
+          if [ -f ~/.bash_profile ]; then
+            echo 'source ~/.bash_profile' >> $TMP_RC_FILE;
+          fi;
+          if [ -f ~/.bashrc ]; then
+            echo 'source ~/.bashrc' >> $TMP_RC_FILE;
+          fi;
+          echo 'PS1="${PS1}(env:'"$DXTOOLS_ENV"') ";' >> $TMP_RC_FILE;
+          echo "rm -f $TMP_RC_FILE" >> $TMP_RC_FILE;
+          bash --rcfile $TMP_RC_FILE;
+          rm -rf $TMP_RC_FILE;
+          exit 0;
+        ;;
+        'generate'|'docker'|'version'|'release')
+          if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
+            shift;
+            printHelp "./commands/${ARG_COMMAND}.md";
+            exit 0;
+          else
+            eval "$(localizePath ./commands/${ARG_COMMAND}.sh) $@";
+            exit 0;
+          fi;
+        ;;
+        *)
+          echo "=> Error: Command does not exist: $ARG_COMMAND";
+          exit 1;
+        ;;
+      esac;
     ;;
   esac;
 done;
