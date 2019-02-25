@@ -18,10 +18,8 @@ ensureComposeFiles() {
 export ID_RSA="$(cat ~/.ssh/id_rsa 2> /dev/null)";
 export ID_RSA_PUB="$(cat ~/.ssh/id_rsa.pub 2> /dev/null)";
 
-if [ "$NODE_ENV" != 'production' ]; then
-  export COMPOSE_FILE="docker-compose.yml:docker-compose.development.yml";
-else
-  export COMPOSE_FILE="docker-compose.yml:docker-compose.production.yml";
+if [ -f "./docker-compose.${DXTOOLS_ENV}.yml" ]; then
+  export COMPOSE_FILE="docker-compose.yml:docker-compose.${DXTOOLS_ENV}.yml";
 fi;
 
 while test $# -gt 0; do
@@ -65,6 +63,8 @@ while test $# -gt 0; do
           ARG_MACHINE="$1"; shift;
           ARG_COMMAND="$1"; shift;
           if [ $ARG_MACHINE == '-' ]; then
+            ARG_MACHINE="${npm_package_organization}-${npm_package_name}-${DXTOOLS_ENV}";
+          elif [ $ARG_MACHINE == '--' ]; then
             ARG_MACHINE="${npm_package_organization}-${npm_package_name}";
           elif [[ $ARG_MACHINE == -* ]]; then
             ARG_MACHINE="${npm_package_organization}-${npm_package_name}${ARG_MACHINE}";
@@ -169,27 +169,7 @@ EOF
                 echo 'source ~/.bashrc' >> $TMP_RC_FILE;
               fi;
               docker-machine env "$ARG_MACHINE" >> $TMP_RC_FILE;
-              # echo 'PS1="\[\e]0;\u@\H: \W\a\]${debian_chroot:+($debian_chroot)}\H:\W (machine)\$ ";' >> $TMP_RC_FILE;
               echo 'PS1="${PS1}(dm:'"${ARG_MACHINE/$npm_package_organization-$npm_package_name}"') ";' >> $TMP_RC_FILE;
-              while test $# -gt 0; do
-                arg=$1; shift;
-                case $arg in
-                  '-p'|'--production')
-                    echo "export NODE_ENV='production';" >> $TMP_RC_FILE;
-                  ;;
-                  '-d'|'--development')
-                    echo "export NODE_ENV='development';" >> $TMP_RC_FILE;
-                  ;;
-                  '-e'|'--environment')
-                    echo "export NODE_ENV='$1';" >> $TMP_RC_FILE;
-                    shift;
-                  ;;
-                  *)
-                    echo "=> Error: Invalid argument \"$arg\"";
-                    exit 1;
-                  ;;
-                esac;
-              done;
               echo "rm -f $TMP_RC_FILE" >> $TMP_RC_FILE;
               bash --rcfile $TMP_RC_FILE;
               rm -rf $TMP_RC_FILE;
