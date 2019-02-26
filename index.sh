@@ -104,7 +104,7 @@ while test $# -gt 0; do
     '-es')
       DXTOOLS_ENV="staging"
     ;;
-    '-e|--env')
+    '-e'|'--env')
       DXTOOLS_ENV="$1";
       shift;
     ;;
