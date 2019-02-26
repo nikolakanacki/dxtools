@@ -36,9 +36,7 @@ yarn tools [...options] <command> [...args]
 
 - `-e|--env <env>`: Set `DXTOOLS_ENV` value to `<env>`.
 - `-ed|-ep|-es`: Set `DXTOOLS_ENV` to `development`, `production` or `staging`, accordingly.
-- `-d|--cd <path>`: Change directory to `<path>` before running any commands.
-
-**Important**: `-d|--cd` and `-e|--env|-e*` flags are processed in the order they are defined: decide whether you first want to change directory or load the current directory environment files.
+- `-d|--cd <path>`: Change directory to `<path>` before running any commands. This is done after the environment has already been loaded.
 
 ## Commands
 

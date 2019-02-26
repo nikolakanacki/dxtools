@@ -92,6 +92,8 @@ if [ -z "$DXTOOLS_ENV" ]; then
   DXTOOLS_ENV='development';
 fi;
 
+DXTOOLS_PWD='./';
+
 while test $# -gt 0; do
   ARG_COMMAND="$1"; shift;
   case $ARG_COMMAND in
@@ -104,12 +106,13 @@ while test $# -gt 0; do
     '-es')
       DXTOOLS_ENV="staging"
     ;;
-    '-e|--env')
+    '-e'|'--env')
       DXTOOLS_ENV="$1";
       shift;
     ;;
     '-d'|'--cd')
-      cd $1; shift;
+      DXTOOLS_PWD="$1";
+      shift;
     ;;
     '--help'|'-h')
       printHelp "./README.md";
@@ -128,6 +131,7 @@ while test $# -gt 0; do
         export $vars;
       fi;
       export DXTOOLS_ENV;
+      cd "$DXTOOLS_PDW";
       case $ARG_COMMAND in
         'eval')
           if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
