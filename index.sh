@@ -96,8 +96,8 @@ if [ -z "$DXTOOLS_ENV_LOADED" ]; then
   DXTOOLS_ENV_LOADED='false';
 fi;
 
-if [ -z "$DXTOOLS_PWD" ]; then
-  DXTOOLS_PWD='./';
+if [ -z "$DXTOOLS_CWD" ]; then
+  DXTOOLS_CWD='./';
 fi;
 
 while test $# -gt 0; do
@@ -120,7 +120,7 @@ while test $# -gt 0; do
       shift;
     ;;
     '-d'|'--cd')
-      DXTOOLS_PWD="$1";
+      DXTOOLS_CWD="$1";
       DXTOOLS_ENV_LOADED='false';
       shift;
     ;;
@@ -147,7 +147,7 @@ while test $# -gt 0; do
         export DXTOOLS_ENV;
         export DXTOOLS_ENV_LOADED='true';
       fi;
-      cd "$DXTOOLS_PDW";
+      cd "$DXTOOLS_CWD";
       case $ARG_COMMAND in
         'eval')
           if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then

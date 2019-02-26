@@ -38,7 +38,7 @@ yarn tools [...options] <command> [...args]
 - `-e|--env <env>`: Set `DXTOOLS_ENV` value to `<env>`.
 - `--no-env`: Prevent environment loading.
 - `-ed|-ep|-es`: Set `DXTOOLS_ENV` to `development`, `production` or `staging`, accordingly.
-- `-d|--cd <path>`: Change directory to `<path>` before running any commands. This is done after the environment has already been loaded.
+- `-d|--cd <path>`: Change directory to `<path>` before running any commands. This is done after the environment has already been loaded. You can also set with `DXTOOLS_CWD` env variable.
 
 ## Commands
 
