@@ -92,19 +92,28 @@ if [ -z "$DXTOOLS_ENV" ]; then
   DXTOOLS_ENV='development';
 fi;
 
-DXTOOLS_PWD='./';
+if [ -z "$DXTOOLS_ENV_LOADED" ]; then
+  DXTOOLS_ENV_LOADED='false';
+fi;
+
+if [ -z "$DXTOOLS_PWD" ]; then
+  DXTOOLS_PWD='./';
+fi;
 
 while test $# -gt 0; do
   ARG_COMMAND="$1"; shift;
   case $ARG_COMMAND in
     '-ed')
-      DXTOOLS_ENV="development";
+      DXTOOLS_ENV='development';
+      DXTOOLS_ENV_LOADED='false';
     ;;
     '-ep')
-      DXTOOLS_ENV="production";
+      DXTOOLS_ENV='production';
+      DXTOOLS_ENV_LOADED='false';
     ;;
     '-es')
-      DXTOOLS_ENV="staging"
+      DXTOOLS_ENV='staging'
+      DXTOOLS_ENV_LOADED='false';
     ;;
     '-e'|'--env')
       DXTOOLS_ENV="$1";
@@ -112,25 +121,32 @@ while test $# -gt 0; do
     ;;
     '-d'|'--cd')
       DXTOOLS_PWD="$1";
+      DXTOOLS_ENV_LOADED='false';
       shift;
+    ;;
+    '--no-env')
+      DXTOOLS_ENV_LOADED='true';
     ;;
     '--help'|'-h')
       printHelp "./README.md";
       exit 0;
     ;;
     *)
-      vars=$(
-        cat \
-          .env.default \
-          ".env.${1}" \
-          ".env.${1}.local" \
-          .env \
-          2>/dev/null | xargs
-      );
-      if ! [ -z "$vars" ]; then
-        export $vars;
+      if [ "$DXTOOLS_ENV_LOADED" != 'true' ]; then
+        vars=$(
+          cat \
+            .env.default \
+            ".env.${1}" \
+            ".env.${1}.local" \
+            .env \
+            2>/dev/null | xargs
+        );
+        if ! [ -z "$vars" ]; then
+          export $vars;
+        fi;
+        export DXTOOLS_ENV;
+        export DXTOOLS_ENV_LOADED='true';
       fi;
-      export DXTOOLS_ENV;
       cd "$DXTOOLS_PDW";
       case $ARG_COMMAND in
         'eval')

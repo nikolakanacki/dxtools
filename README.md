@@ -17,8 +17,9 @@ The following instructions are outlined for the repositories (projects) utilizin
 
 ## Environment files
 
-Global environment defaults to `development` and is set with `DXTOOLS_ENV` env variable.
-The following files / file patterns will be read as environment files in the order specified below:
+Global environment is set with `DXTOOLS_ENV` variable and defaults to `development` if not set before running the command (you can also use options arguments to set it, see below). You can prevent the environment loading completely by setting `DXTOOLS_ENV_LOADED` to `'true'` or by using `--no-env` options argument. Passing any of the environment options arguments will reset `DXTOOLS_ENV_LOADED` to `false`.
+
+The following files / file patterns will be loaded into environment in the order specified below:
 
 - `.env.default`: Commitable default values applied for all environments.
 - `.env.<DXTOOLS_ENV>`: Commitable `<DXTOOLS_ENV>` values.
@@ -35,6 +36,7 @@ yarn tools [...options] <command> [...args]
 ## Options
 
 - `-e|--env <env>`: Set `DXTOOLS_ENV` value to `<env>`.
+- `--no-env`: Prevent environment loading.
 - `-ed|-ep|-es`: Set `DXTOOLS_ENV` to `development`, `production` or `staging`, accordingly.
 - `-d|--cd <path>`: Change directory to `<path>` before running any commands. This is done after the environment has already been loaded.
 
