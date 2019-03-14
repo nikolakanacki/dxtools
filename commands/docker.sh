@@ -5,14 +5,6 @@ ensureComposeFiles() {
     echo '=> Error: Missing docker-compose.yml';
     exit 1;
   fi;
-  if ! [ -f docker-compose.development.yml ]; then
-    echo '=> Error: Missing docker-compose.development.yml';
-    exit 1;
-  fi;
-  if ! [ -f docker-compose.production.yml ]; then
-    echo '=> Error: Missing docker-compose.production.yml';
-    exit 1;
-  fi;
 }
 
 export ID_RSA="$(cat ~/.ssh/id_rsa 2> /dev/null)";
