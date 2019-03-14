@@ -136,8 +136,8 @@ while test $# -gt 0; do
         vars=$(
           cat \
             .env.default \
-            ".env.${1}" \
-            ".env.${1}.local" \
+            ".env.${DXTOOLS_ENV}" \
+            ".env.${DXTOOLS_ENV}.local" \
             .env \
             2>/dev/null | xargs
         );
