@@ -64,6 +64,17 @@ while test $# -gt 0; do
           docker restart "$RESTART_CONTAINER_NAME";
           exit 0;
         ;;
+        'refresh')
+          ensureEnvFiles;
+          ensureComposeFiles;
+          CONTAINER_NAME="$1";
+          shift;
+          docker-compose stop "$CONTAINER_NAME" \
+            && echo y | docker-compose rm "$CONTAINER_NAME" \
+            && docker-compose build "$CONTAINER_NAME" \
+            && docker-compose up -d "$CONTAINER_NAME";
+          exit 0;
+        ;;
         'machine-import')
           machine-import "$1"; shift;
           exit 0;
