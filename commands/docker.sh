@@ -7,6 +7,21 @@ ensureComposeFiles() {
   fi;
 }
 
+ensureEnvFiles() {
+  if ! [ -f ".env.default" ]; then
+    touch ".env.default";
+  fi;
+  if ! [ -f ".env.${DXTOOLS_ENV}" ]; then
+    touch ".env.${DXTOOLS_ENV}";
+  fi;
+  if ! [ -f ".env.${DXTOOLS_ENV}.local" ]; then
+    touch ".env.${DXTOOLS_ENV}.local";
+  fi;
+  if ! [ -f ".env" ]; then
+    touch ".env";
+  fi;
+}
+
 export ID_RSA="$(cat ~/.ssh/id_rsa 2> /dev/null)";
 export ID_RSA_PUB="$(cat ~/.ssh/id_rsa.pub 2> /dev/null)";
 
@@ -31,6 +46,7 @@ while test $# -gt 0; do
           exit 0;
         ;;
         'enter'|'exec')
+          ensureEnvFiles;
           ensureComposeFiles;
           CONTAINER_NAME="${npm_package_organization}-${npm_package_name}-$1"; shift;
           CONTAINER_COMMAND=$1; shift;
@@ -41,10 +57,22 @@ while test $# -gt 0; do
           exit 0;
         ;;
         'restart')
+          ensureEnvFiles;
           ensureComposeFiles;
           RESTART_CONTAINER_NAME="${npm_package_organization}-${npm_package_name}-$1";
           shift;
           docker restart "$RESTART_CONTAINER_NAME";
+          exit 0;
+        ;;
+        'refresh')
+          ensureEnvFiles;
+          ensureComposeFiles;
+          CONTAINER_NAME="$1";
+          shift;
+          docker-compose stop "$CONTAINER_NAME" \
+            && echo y | docker-compose rm "$CONTAINER_NAME" \
+            && docker-compose build "$CONTAINER_NAME" \
+            && docker-compose up -d "$CONTAINER_NAME";
           exit 0;
         ;;
         'machine-import')
@@ -228,6 +256,7 @@ EOF
           esac;
         ;;
         *)
+          ensureEnvFiles;
           ensureComposeFiles;
           docker-compose $ARG_COMMAND $@;
           exit 0;
