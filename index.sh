@@ -100,6 +100,10 @@ if [ -z "$DXTOOLS_CWD" ]; then
   DXTOOLS_CWD='./';
 fi;
 
+if [ -z "$DXTOOLS_EXECUTABLE" ]; then
+  export DXTOOLS_EXECUTABLE=$(localizePath index.sh);
+fi;
+
 while test $# -gt 0; do
   ARG_COMMAND="$1"; shift;
   case $ARG_COMMAND in

@@ -38,7 +38,7 @@ echo '=> Generating release changelog';
 newVersionChangelog="$(git log master..dev --pretty=format:'- %h %s')";
 
 echo '=> Performing a version bump';
-newVersion=$(dxtools version "$@");
+newVersion=$($DXTOOLS_EXECUTABLE version "$@");
 
 if [ -z "$newVersion" ]; then
   echo '=> Error: Could not perform a version bump';
