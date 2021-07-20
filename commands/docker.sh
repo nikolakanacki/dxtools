@@ -71,7 +71,7 @@ while test $# -gt 0; do
           shift;
           docker-compose build "$CONTAINER_NAME" \
             && docker-compose stop "$CONTAINER_NAME" \
-            && echo y | docker-compose rm "$CONTAINER_NAME" \
+            && docker-compose rm -f "$CONTAINER_NAME" \
             && docker-compose up -d "$CONTAINER_NAME";
           exit 0;
         ;;
