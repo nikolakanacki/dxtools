@@ -64,7 +64,8 @@ Before each command `COMPOSE_FILE` variable is set as such:
   Creates a new docker machine. Arguments:
   - `digitalocean`: Specifies DigitalOcean as a driver which accepts following options:
     - `-t|--token`: Access Token used to access DigitalOcean api.
-    - `-s|--size`: Size of the droplet (defaults to `1gb`).
+    - `-s|--size`: Size of the droplet (defaults to `s-1vcpu-1gb`).
+    - `-i|--image`: Image to install on droplet (defaults to `ubuntu-18-04-x64`).
     - `-r|--region`: DigitalOcean region in which to create the machine (defaults to `ams3`).
     - `--`: All arguments after this will be passed to the underlying `docker-machine create` command.
 

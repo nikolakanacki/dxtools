@@ -208,7 +208,8 @@ EOF
               case $ARG_DRIVER in
                 'digitalocean')
                   ARG_TOKEN='';
-                  ARG_SIZE='1gb';
+                  ARG_SIZE='s-1vcpu-1gb';
+                  ARG_IMAGE='ubuntu-18-04-x64'
                   ARG_REGION='ams3';
                   while test $# -gt 0; do
                     arg=$1; shift;
@@ -219,6 +220,10 @@ EOF
                       ;;
                       '-s'|'--size')
                         ARG_SIZE="$1";
+                        shift;
+                      ;;
+                      '-i'|'--image')
+                        ARG_IMAGE="$1";
                         shift;
                       ;;
                       '-r'|'--region')
@@ -238,6 +243,7 @@ EOF
                   --driver "$ARG_DRIVER" \
                   --digitalocean-access-token "$ARG_TOKEN" \
                   --digitalocean-size "$ARG_SIZE" \
+                  --digitalocean-image "$ARG_IMAGE" \
                   --digitalocean-region "$ARG_REGION" \
                   $ARG_MACHINE \
                   $@;
