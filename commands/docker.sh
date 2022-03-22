@@ -256,7 +256,7 @@ EOF
               esac;
             ;;
             *)
-              docker-machine $ARG_COMMAND $ARG_MACHINE $@;
+              docker-machine $ARG_COMMAND $@ $ARG_MACHINE;
               exit 0;
             ;;
           esac;
