@@ -83,7 +83,11 @@ while test $# -gt 0; do
           ARG_MACHINE="$1"; shift;
           ARG_COMMAND="$1"; shift;
           if [ $ARG_MACHINE == '-' ]; then
-            ARG_MACHINE="${npm_package_organization}-${npm_package_name}-${DXTOOLS_ENV}";
+            if [ -z $DXTOOLS_DOCKER_MACHINE_NAME ]; then
+              ARG_MACHINE="${npm_package_organization}-${npm_package_name}-${DXTOOLS_ENV}";
+            else
+              ARG_MACHINE="${DXTOOLS_DOCKER_MACHINE_NAME}";
+            fi;
           elif [ $ARG_MACHINE == '--' ]; then
             ARG_MACHINE="${npm_package_organization}-${npm_package_name}";
           elif [[ $ARG_MACHINE == -* ]]; then
@@ -91,6 +95,7 @@ while test $# -gt 0; do
           elif [[ $ARG_MACHINE == *- ]]; then
             ARG_MACHINE="${ARG_MACHINE}${npm_package_organization}-${npm_package_name}";
           fi;
+          export DXTOOLS_DOCKER_MACHINE_NAME="${ARG_MACHINE}";
           case $ARG_COMMAND in
             'push')
               ARG_TARGET="$(echo $1 | sed 's|^./||')"; shift;
