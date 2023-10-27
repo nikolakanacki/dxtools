@@ -59,20 +59,32 @@ while test $# -gt 0; do
         'restart')
           ensureEnvFiles;
           ensureComposeFiles;
-          RESTART_CONTAINER_NAME="${npm_package_organization}-${npm_package_name}-$1";
-          shift;
-          docker restart "$RESTART_CONTAINER_NAME";
+          RESTART_CONTAINER_NAMES=();
+          for containerName in $@; do
+            RESTART_CONTAINER_NAMES+=("${npm_package_organization}-${npm_package_name}-$containerName");
+          done;
+          command docker restart "${RESTART_CONTAINER_NAMES[@]}";
           exit 0;
         ;;
         'refresh')
           ensureEnvFiles;
           ensureComposeFiles;
-          CONTAINER_NAME="$1";
-          shift;
-          docker-compose build "$CONTAINER_NAME" \
-            && docker-compose stop "$CONTAINER_NAME" \
-            && docker-compose rm -f "$CONTAINER_NAME" \
-            && docker-compose up -d "$CONTAINER_NAME";
+          REFRESH_CONTAINER_OPTIONS=();
+          REFRESH_CONTAINER_NAMES=();
+          for refreshArg in $@; do
+            case $refreshArg in
+              -*)
+                REFRESH_CONTAINER_OPTIONS+=("$refreshArg");
+              ;;
+              *)
+                REFRESH_CONTAINER_NAMES+=("$refreshArg");
+              ;;
+            esac;
+          done;
+          command docker-compose build "${REFRESH_CONTAINER_OPTIONS[@]}" "${REFRESH_CONTAINER_NAMES[@]}" \
+            && command docker-compose stop "${REFRESH_CONTAINER_NAMES[@]}" \
+            && command docker-compose rm -f "${REFRESH_CONTAINER_NAMES[@]}" \
+            && docker-compose up -d;
           exit 0;
         ;;
         'machine-import')
