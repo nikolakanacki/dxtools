@@ -44,6 +44,8 @@ Before each command `COMPOSE_FILE` variable is set as such:
   Executes the provided command in the target container. By default (if the command is not specified) it enters /bin/bash).
 - `restart [...service]`
   Restarts the service (or services) if ones are provided, otherwise restarts all containers.
+- `refresh [...docker-build-option] [...service]`
+  Build, stop, then remove `<service>`, call `docker-compose up -d` at the end.
 - `machine-import <machine-export-path>`
   Import a machine from an exported machine zip file located at `<machine-export-path>` (see `machine <machine> export`).
 - `machine <machine> shell`
