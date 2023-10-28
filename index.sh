@@ -172,10 +172,23 @@ while test $# -gt 0; do
           if [ -f ~/.bashrc ]; then
             echo 'source ~/.bashrc' >> $TMP_RC_FILE;
           fi;
+          echo 'exit() { if [ -z "$1" ]; then builtin exit 0; fi; builtin exit $1; }' >> $TMP_RC_FILE;
           echo 'PS1="${PS1}(env:'"$DXTOOLS_ENV"') ";' >> $TMP_RC_FILE;
+          argCommand=($@);
           echo "rm -f $TMP_RC_FILE" >> $TMP_RC_FILE;
+          if [ "${#argCommand[@]}" -gt 0 ]; then
+            echo 'onSigTerm() { kill -TERM "$childPid" 2>/dev/null; childExitCode=$?; exit $childExitCode; }' >> $TMP_RC_FILE;
+            echo 'trap onSigTerm SIGTERM SIGINT' >> $TMP_RC_FILE;
+            echo "${argCommand[@]} &" >> $TMP_RC_FILE;
+            echo 'childPid=$!' >> $TMP_RC_FILE;
+            echo 'wait "$childPid"' >> $TMP_RC_FILE;
+            echo 'childExitCode=$?' >> $TMP_RC_FILE;
+            echo 'exit $childExitCode' >> $TMP_RC_FILE;
+          fi;
           bash --rcfile $TMP_RC_FILE;
-          exit $?;
+          shellExitCode=$?;
+          rm -rf $TMP_RC_FILE;
+          exit $shellExitCode;
         ;;
         'generate'|'docker'|'version'|'release')
           if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then

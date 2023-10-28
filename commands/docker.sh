@@ -211,6 +211,7 @@ EOF
                 rm -rf $TMP_RC_FILE;
                 exit $dmExitCode;
               fi;
+              echo 'exit() { if [ -z "$1" ]; then builtin exit 0; fi; builtin exit $1; }' >> $TMP_RC_FILE;
               echo 'PS1="${PS1}(dm:'"${ARG_MACHINE/$npm_package_organization-$npm_package_name}"') ";' >> $TMP_RC_FILE;
               argCommand=($@);
               echo "rm -f $TMP_RC_FILE" >> $TMP_RC_FILE;
