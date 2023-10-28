@@ -206,19 +206,35 @@ EOF
                 echo 'source ~/.bashrc' >> $TMP_RC_FILE;
               fi;
               docker-machine env "$ARG_MACHINE" >> $TMP_RC_FILE;
+              dmExitCode=$?;
+              if [ $dmExitCode -gt 0 ]; then
+                rm -rf $TMP_RC_FILE;
+                exit $dmExitCode;
+              fi;
               echo 'PS1="${PS1}(dm:'"${ARG_MACHINE/$npm_package_organization-$npm_package_name}"') ";' >> $TMP_RC_FILE;
+              argCommand=($@);
               echo "rm -f $TMP_RC_FILE" >> $TMP_RC_FILE;
+              if [ "${#argCommand[@]}" -gt 0 ]; then
+                echo 'onSigTerm() { kill -TERM "$childPid" 2>/dev/null; childExitCode=$?; exit $childExitCode; }' >> $TMP_RC_FILE;
+                echo 'trap onSigTerm SIGTERM SIGINT' >> $TMP_RC_FILE;
+                echo "${argCommand[@]} &" >> $TMP_RC_FILE;
+                echo 'childPid=$!' >> $TMP_RC_FILE;
+                echo 'wait "$childPid"' >> $TMP_RC_FILE;
+                echo 'childExitCode=$?' >> $TMP_RC_FILE;
+                echo 'exit $childExitCode' >> $TMP_RC_FILE;
+              fi;
               bash --rcfile $TMP_RC_FILE;
+              shellExitCode=$?;
               rm -rf $TMP_RC_FILE;
-              exit 0;
+              exit $shellExitCode;
             ;;
             'export')
               machine-export "${ARG_MACHINE}";
-              exit 0;
+              exit $?;
             ;;
             'import')
               machine-import "${ARG_MACHINE}.zip";
-              exit 0;
+              exit $?;
             ;;
             'create')
               ARG_DRIVER=$1; shift;
@@ -264,7 +280,7 @@ EOF
                   --digitalocean-region "$ARG_REGION" \
                   $ARG_MACHINE \
                   $@;
-                  exit 0;
+                  exit $?;
                 ;;
                 *)
                   echo "=> Error: Driver \"$ARG_DRIVER\" not supported";
@@ -274,7 +290,7 @@ EOF
             ;;
             *)
               docker-machine $ARG_COMMAND $@ $ARG_MACHINE;
-              exit 0;
+              exit $?;
             ;;
           esac;
         ;;
@@ -282,7 +298,7 @@ EOF
           ensureEnvFiles;
           ensureComposeFiles;
           docker-compose $ARG_COMMAND $@;
-          exit 0;
+          exit $?;
         ;;
       esac;
     ;;

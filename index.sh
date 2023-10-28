@@ -121,6 +121,7 @@ while test $# -gt 0; do
     ;;
     '-e'|'--env')
       DXTOOLS_ENV="$1";
+      DXTOOLS_ENV_LOADED='false';
       shift;
     ;;
     '-d'|'--cd')
@@ -159,11 +160,8 @@ while test $# -gt 0; do
             printHelp "./commands/${ARG_COMMAND}.md";
             exit 0;
           else
-            if eval "$@"; then
-              exit 0;
-            else
-              exit 1;
-            fi;
+            eval "$@";
+            exit $?;
           fi;
         ;;
         'shell')
@@ -177,8 +175,7 @@ while test $# -gt 0; do
           echo 'PS1="${PS1}(env:'"$DXTOOLS_ENV"') ";' >> $TMP_RC_FILE;
           echo "rm -f $TMP_RC_FILE" >> $TMP_RC_FILE;
           bash --rcfile $TMP_RC_FILE;
-          rm -rf $TMP_RC_FILE;
-          exit 0;
+          exit $?;
         ;;
         'generate'|'docker'|'version'|'release')
           if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
@@ -187,7 +184,7 @@ while test $# -gt 0; do
             exit 0;
           else
             eval "$(localizePath ./commands/${ARG_COMMAND}.sh) $@";
-            exit 0;
+            exit $?;
           fi;
         ;;
         *)
